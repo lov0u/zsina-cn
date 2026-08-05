@@ -1,0 +1,14 @@
+# 景盛货运
+
+> 沂水景盛货运（zsina.cn）是一家专业货运物流企业，提供长途运输、城市配送、冷链物流、大件运输、仓储服务等综合物流解决方案。安全、高效、守时，全国直达，值得信赖。
+
+## 主要页面
+- [首页](https://zsina.cn/): 景盛货运官方网站
+- [服务项目](https://zsina.cn/services/): 长途运输、城市配送、冷链物流、大件运输、仓储服务
+- [关于我们](https://zsina.cn/about/): 公司介绍、发展历程和资质认证
+- [新闻资讯](https://zsina.cn/news/): 物流行业动态、运输知识和企业资讯
+- [联系我们](https://zsina.cn/contact/): 联系方式和地址
+
+## 站点信息
+- [网站地图](https://zsina.cn/sitemap.xml): XML 格式站点地图
+- [robots.txt](https://zsina.cn/robots.txt): 爬虫访问规则
