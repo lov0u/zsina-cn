@@ -312,3 +312,23 @@ a {
     height: 260px;
   }
 }
+
+/* 正文表格（图表下方保留的语义化表格） */
+.prose-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 0.9rem;
+}
+.prose-content th,
+.prose-content td {
+  border: 1px solid #e5e7eb;
+  padding: 0.625rem 0.875rem;
+  text-align: left;
+  color: #4b5563;
+}
+.prose-content th {
+  background: #f9fafb;
+  font-weight: 600;
+  color: #111827;
+}

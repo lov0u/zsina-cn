@@ -3,10 +3,14 @@
 import { useEffect } from 'react';
 import Chart from 'chart.js/auto';
 
+// 站点主题色板（柱状图用）
 const COLORS = ['#f59e0b', '#1f2937', '#ea580c', '#0891b2', '#16a34a', '#9333ea'];
 function palette(i: number): string {
   return COLORS[i % COLORS.length];
 }
+
+// 饼图专用高对比度色板（避免相邻色相近导致切片难分辨）
+const PIE_COLORS = ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6', '#06b6d4'];
 
 /**
  * 把单元格文本解析成数字。
@@ -34,6 +38,11 @@ function parseCellNumber(text: string): number | null {
  * 扫描正文中的 table[data-chart]，用 Chart.js 在其前方渲染可视化图表。
  * 原始 <table> 始终保留在 DOM 中（语义化、可被搜索引擎抓取），图表只是增强展示。
  * 支持 data-chart="bar"（跨项对比）与 data-chart="pie"（占比构成）。
+ *
+ * 设计要点：
+ * - 饼图：6 色高对比度色板 + 白色 2px 描边，区分切片清晰；hover 偏移 8px。
+ * - 柱状图：自动检测量纲异常 series（最大值 > 中位数 × 3 且 > 10），
+ *   把异常 series 路由到右侧 y1 轴，避免与主量纲的小柱重叠看不见。
  */
 export default function ArticleCharts() {
   useEffect(() => {
@@ -82,6 +91,16 @@ export default function ArticleCharts() {
 
       const labels = usableRows.map((r) => r.label);
 
+      // 计算每个 series 的最大值，用于检测量纲异常
+      const seriesMaxes = keptSeries.map((ci) =>
+        Math.max(0, ...usableRows.map((r) => r.values[ci] ?? 0))
+      );
+      const sortedMaxes = [...seriesMaxes].sort((a, b) => a - b);
+      const medianMax = sortedMaxes[Math.floor(sortedMaxes.length / 2)] || 0;
+      // 若某个 series 的最大值显著大于其它（中位数 × 3 且 > 10），视为量纲异常
+      const hasOutlier =
+        medianMax > 0 && seriesMaxes.some((m) => m > medianMax * 3 && m > 10);
+
       let datasets;
       if (chartType === 'pie') {
         // 饼图只用第一个有效数值列
@@ -90,18 +109,27 @@ export default function ArticleCharts() {
           {
             label: seriesNames[ci],
             data: usableRows.map((r) => r.values[ci] ?? 0),
-            backgroundColor: usableRows.map((_, i) => palette(i)),
-            borderWidth: 1,
+            backgroundColor: usableRows.map((_, i) =>
+              PIE_COLORS[i % PIE_COLORS.length]
+            ),
+            borderColor: '#ffffff',
+            borderWidth: 2,
+            hoverOffset: 8,
           },
         ];
       } else {
-        datasets = keptSeries.map((ci, idx) => ({
-          label: seriesNames[ci],
-          data: usableRows.map((r) => r.values[ci] ?? 0),
-          backgroundColor: palette(idx),
-          borderColor: palette(idx),
-          borderWidth: 1,
-        }));
+        datasets = keptSeries.map((ci, idx) => {
+          const max = seriesMaxes[idx];
+          const isOutlier = hasOutlier && max > medianMax * 3 && max > 10;
+          return {
+            label: seriesNames[ci],
+            data: usableRows.map((r) => r.values[ci] ?? 0),
+            backgroundColor: palette(idx),
+            borderColor: palette(idx),
+            borderWidth: 1,
+            yAxisID: isOutlier ? 'y1' : 'y',
+          };
+        });
       }
 
       const wrap = document.createElement('div');
@@ -122,24 +150,40 @@ export default function ArticleCharts() {
       wrap.appendChild(canvasBox);
       table.parentNode?.insertBefore(wrap, table);
 
+      const chartOptions: any = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: chartType === 'pie' || keptSeries.length > 1,
+            position: chartType === 'pie' ? 'right' : 'top',
+          },
+        },
+      };
+      if (chartType !== 'pie') {
+        chartOptions.scales = {
+          y: {
+            beginAtZero: true,
+            title: hasOutlier
+              ? { display: true, text: '主量纲' }
+              : undefined,
+          },
+        };
+        if (hasOutlier) {
+          chartOptions.scales.y1 = {
+            beginAtZero: true,
+            position: 'right',
+            grid: { drawOnChartArea: false },
+            title: { display: true, text: '次量纲' },
+          };
+        }
+      }
+
       charts.push(
         new Chart(canvas, {
           type: chartType,
           data: { labels, datasets },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              legend: {
-                display: chartType === 'pie' || keptSeries.length > 1,
-                position: chartType === 'pie' ? 'right' : 'top',
-              },
-            },
-            scales:
-              chartType === 'pie'
-                ? undefined
-                : { y: { beginAtZero: true } },
-          },
+          options: chartOptions,
         })
       );
     });
