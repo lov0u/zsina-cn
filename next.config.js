@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'standalone',
   // 图片配置
   images: {
     unoptimized: true,
@@ -10,10 +11,18 @@ const nextConfig = {
       },
       {
         protocol: "http",
+        hostname: "payload.ra0.cn",
+      },
+      {
+        protocol: "http",
         hostname: "strapi.ra0.cn",
       },
       {
         protocol: "https",
+        hostname: "payload.ra0.cn",
+      },
+      {
+        protocol: "http",
         hostname: "strapi.ra0.cn",
       },
     ],
