@@ -10,3 +10,5 @@ zsina.cn 景盛货运网站 - Next.js
 <!-- Fix Dockerfile - 2026-08-08 10:21:04 -->
 
 <!-- Fix tsconfig - 2026-08-08 10:22:54 -->
+
+<!-- Fix ACR name - 2026-08-08 10:35:21 -->
