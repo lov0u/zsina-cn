@@ -20,46 +20,42 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Login to ACR
-      uses: docker/login-action@v3
-      with:
-        registry: ${{env.ACR_REGISTRY}}
-        username: ${{secrets.ACR_USERNAME}}
-        password: ${{secrets.ACR_PASSWORD}}
-
     - name: Build and push Docker image
       uses: docker/build-push-action@v5
       with:
         context: .
         push: true
         tags: |
-          ${{env.ACR_REGISTRY}}/${{env.ACR_NAMESPACE}}/${{env.IMAGE_NAME}}:latest
-          ${{env.ACR_REGISTRY}}/${{env.ACR_NAMESPACE}}/${{env.IMAGE_NAME}}:${{github.sha}}
+          crpi-e6ejb7mi9ku0ep4b.cn-shanghai.personal.cr.aliyuncs.com/lov0u/zsina:latest
+          crpi-e6ejb7mi9ku0ep4b.cn-shanghai.personal.cr.aliyuncs.com/lov0u/zsina:${{github.sha}}
         cache-from: type=gha
         cache-to: type=gha,mode=max
+      env:
+        DOCKER_USERNAME: ${{ secrets.ACR_USERNAME }}
+        DOCKER_PASSWORD: ${{ secrets.ACR_PASSWORD }}
 
     - name: Deploy to server
       uses: appleboy/ssh-action@v1
       with:
-        host: ${{secrets.SERVER_HOST}}
-        username: ${{secrets.SERVER_USER}}
-        password: ${{secrets.SERVER_PASSWORD}}
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USER }}
+        password: ${{ secrets.SERVER_PASSWORD }}
         script: |
           echo "=== Deploy zsina ==="
           echo "Login ACR..."
-          docker login ${{env.ACR_REGISTRY}} -u ${{secrets.ACR_USERNAME}} -p ${{secrets.ACR_PASSWORD}}
+          docker login crpi-e6ejb7mi9ku0ep4b.cn-shanghai.personal.cr.aliyuncs.com -u ${{ secrets.ACR_USERNAME }} -p ${{ secrets.ACR_PASSWORD }}
           echo "Pull image..."
-          docker pull ${{env.ACR_REGISTRY}}/${{env.ACR_NAMESPACE}}/${{env.IMAGE_NAME}}:latest
+          docker pull crpi-e6ejb7mi9ku0ep4b.cn-shanghai.personal.cr.aliyuncs.com/lov0u/zsina:latest
           echo "Stop old container..."
-          docker stop ${{env.IMAGE_NAME}} || true
-          docker rm ${{env.IMAGE_NAME}} || true
+          docker stop zsina || true
+          docker rm zsina || true
           echo "Start new container..."
           docker run -d \
-            --name ${{env.IMAGE_NAME}} \
+            --name zsina \
             --restart always \
-            -p ${{env.PORT}}:3000 \
+            -p 3005:3000 \
             -e NODE_ENV=production \
-            ${{env.ACR_REGISTRY}}/${{env.ACR_NAMESPACE}}/${{env.IMAGE_NAME}}:latest
+            crpi-e6ejb7mi9ku0ep4b.cn-shanghai.personal.cr.aliyuncs.com/lov0u/zsina:latest
           echo "Prune old images..."
           docker image prune -f
           echo "Done!"
