@@ -8,7 +8,7 @@ on:
 env:
   ACR_REGISTRY: crpi-e6ejb7mi9ku0ep4b.cn-shanghai.personal.cr.aliyuncs.com
   ACR_NAMESPACE: lov0u
-  IMAGE_NAME: zsina
+  IMAGE_NAME: zsina-cn
   SITE_SLUG: zsina
   PORT: 3005
 
@@ -26,8 +26,8 @@ jobs:
         context: .
         push: true
         tags: |
-          crpi-e6ejb7mi9ku0ep4b.cn-shanghai.personal.cr.aliyuncs.com/lov0u/zsina:latest
-          crpi-e6ejb7mi9ku0ep4b.cn-shanghai.personal.cr.aliyuncs.com/lov0u/zsina:${{github.sha}}
+          crpi-e6ejb7mi9ku0ep4b.cn-shanghai.personal.cr.aliyuncs.com/lov0u/zsina-cn:latest
+          crpi-e6ejb7mi9ku0ep4b.cn-shanghai.personal.cr.aliyuncs.com/lov0u/zsina-cn:${{github.sha}}
 
     - name: Deploy to server
       uses: appleboy/ssh-action@v1
@@ -36,21 +36,21 @@ jobs:
         username: ${{ secrets.SERVER_USER }}
         password: ${{ secrets.SERVER_PASSWORD }}
         script: |
-          echo "=== Deploy zsina ==="
+          echo "=== Deploy zsina-cn ==="
           echo "Login ACR..."
           docker login crpi-e6ejb7mi9ku0ep4b.cn-shanghai.personal.cr.aliyuncs.com -u ${{ secrets.ACR_USERNAME }} -p ${{ secrets.ACR_PASSWORD }}
           echo "Pull image..."
-          docker pull crpi-e6ejb7mi9ku0ep4b.cn-shanghai.personal.cr.aliyuncs.com/lov0u/zsina:latest
+          docker pull crpi-e6ejb7mi9ku0ep4b.cn-shanghai.personal.cr.aliyuncs.com/lov0u/zsina-cn:latest
           echo "Stop old container..."
-          docker stop zsina || true
-          docker rm zsina || true
+          docker stop zsina-cn || true
+          docker rm zsina-cn || true
           echo "Start new container..."
           docker run -d \
-            --name zsina \
+            --name zsina-cn \
             --restart always \
             -p 3005:3000 \
             -e NODE_ENV=production \
-            crpi-e6ejb7mi9ku0ep4b.cn-shanghai.personal.cr.aliyuncs.com/lov0u/zsina:latest
+            crpi-e6ejb7mi9ku0ep4b.cn-shanghai.personal.cr.aliyuncs.com/lov0u/zsina-cn:latest
           echo "Prune old images..."
           docker image prune -f
           echo "Done!"
