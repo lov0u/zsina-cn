@@ -9,7 +9,7 @@ env:
   ACR_REGISTRY: crpi-e6ejb7mi9ku0ep4b.cn-shanghai.personal.cr.aliyuncs.com
   ACR_NAMESPACE: lov0u
   IMAGE_NAME: zsina-cn
-  SITE_SLUG: zsina
+  SITE_SLUG: zsina-cn
   PORT: 3005
 
 jobs:
@@ -20,6 +20,13 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
+    - name: Login to ACR
+      uses: docker/login-action@v3
+      with:
+        registry: crpi-e6ejb7mi9ku0ep4b.cn-shanghai.personal.cr.aliyuncs.com
+        username: ${{ secrets.ACR_USERNAME }}
+        password: ${{ secrets.ACR_PASSWORD }}
+
     - name: Build and push Docker image
       uses: docker/build-push-action@v5
       with:
@@ -27,7 +34,7 @@ jobs:
         push: true
         tags: |
           crpi-e6ejb7mi9ku0ep4b.cn-shanghai.personal.cr.aliyuncs.com/lov0u/zsina-cn:latest
-          crpi-e6ejb7mi9ku0ep4b.cn-shanghai.personal.cr.aliyuncs.com/lov0u/zsina-cn:${{github.sha}}
+          crpi-e6ejb7mi9ku0ep4b.cn-shanghai.personal.cr.aliyuncs.com/lov0u/zsina-cn:${{ github.sha }}
 
     - name: Deploy to server
       uses: appleboy/ssh-action@v1
