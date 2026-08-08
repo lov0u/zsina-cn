@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { services, companyInfo, stats } from "@/lib/data";
-import { getArticles } from "@/lib/strapi";
+import { getArticles } from "@/lib/payload";
 import ServiceIcon from "@/components/ServiceIcon";
 
 export const revalidate = 3600;

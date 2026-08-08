@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { services, companyInfo } from "@/lib/data";
-import { getArticles, getTags } from "@/lib/strapi";
+import { getArticles, getTags } from "@/lib/payload";
 
 export const revalidate = 3600;
 

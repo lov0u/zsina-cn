@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { companyInfo } from "@/lib/data";
-import { getArticle, getArticles } from "@/lib/strapi";
+import { getArticle, getArticles } from "@/lib/payload";
 
 interface PageProps {
   params: Promise<{ slug: string }>;

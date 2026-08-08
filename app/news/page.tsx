@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { companyInfo } from "@/lib/data";
-import { getArticles } from "@/lib/strapi";
+import { getArticles } from "@/lib/payload";
 
 export const revalidate = 300;
 
