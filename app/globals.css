@@ -295,6 +295,20 @@ a {
   margin-bottom: 0.75rem;
   font-size: 0.95rem;
 }
-.article-chart-wrap canvas {
-  max-height: 360px;
+/* Chart.js 用 maintainAspectRatio:false，canvas 的直接父容器必须有确定高度 */
+.article-chart-canvas {
+  position: relative;
+  height: 320px;
+}
+.article-chart-canvas canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+@media (max-width: 640px) {
+  .article-chart-wrap {
+    padding: 0.75rem;
+  }
+  .article-chart-canvas {
+    height: 260px;
+  }
 }
