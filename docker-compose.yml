@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  zsina:
+    image: crpi-e6ejb7mi9ku0ep4b.cn-shanghai.personal.cr.aliyuncs.com/lov0u/zsina:latest
+    container_name: zsina
+    restart: always
+    ports:
+      - "3006:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_PAYLOAD_URL=https://payload.ra0.cn
+      - NEXT_PUBLIC_SITE_SLUG=zsina
+    networks:
+      - webnet
+
+networks:
+  webnet:
+    driver: bridge
