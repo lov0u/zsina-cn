@@ -280,3 +280,21 @@ a {
   height: 100%;
   object-fit: cover;
 }
+
+/* 正文图表：前端 Chart.js 根据 table[data-chart] 渲染；原始 <table> 保留在 DOM 保证 SEO 可读 */
+.article-chart-wrap {
+  margin: 1.75rem 0;
+  padding: 1rem 1.25rem;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+}
+.article-chart-title {
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 0.75rem;
+  font-size: 0.95rem;
+}
+.article-chart-wrap canvas {
+  max-height: 360px;
+}

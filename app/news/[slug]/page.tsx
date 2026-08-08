@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { companyInfo } from "@/lib/data";
 import { getArticle, getArticles } from "@/lib/payload";
+import ArticleCharts from "@/app/ArticleCharts";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -97,6 +98,8 @@ export default async function NewsDetailPage({ params }: PageProps) {
             className="prose-content"
             dangerouslySetInnerHTML={{ __html: article.content }}
           />
+          <ArticleCharts />
+
         </div>
       </section>
 
