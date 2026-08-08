@@ -28,11 +28,6 @@ jobs:
         tags: |
           crpi-e6ejb7mi9ku0ep4b.cn-shanghai.personal.cr.aliyuncs.com/lov0u/zsina:latest
           crpi-e6ejb7mi9ku0ep4b.cn-shanghai.personal.cr.aliyuncs.com/lov0u/zsina:${{github.sha}}
-        cache-from: type=gha
-        cache-to: type=gha,mode=max
-      env:
-        DOCKER_USERNAME: ${{ secrets.ACR_USERNAME }}
-        DOCKER_PASSWORD: ${{ secrets.ACR_PASSWORD }}
 
     - name: Deploy to server
       uses: appleboy/ssh-action@v1
