@@ -8,7 +8,7 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
-export const revalidate = 3600;
+export const revalidate = 60;
 
 export async function generateStaticParams() {
   const { articles } = await getArticles(1, 100);
@@ -84,17 +84,6 @@ export default async function NewsDetailPage({ params }: PageProps) {
           </div>
         </div>
       </section>
-
-      {/* 封面图 */}
-      {article.coverImage && (
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
-          <img
-            src={article.coverImage}
-            alt={article.title}
-            className="w-full h-64 md:h-96 object-cover shadow-lg"
-          />
-        </div>
-      )}
 
       {/* 正文 */}
       <section className="pb-16 bg-white">

@@ -194,7 +194,7 @@ export default async function HomePage() {
                   className="industrial-card overflow-hidden card-hover group"
                 >
                   {article.coverImage && (
-                    <div className="aspect-video overflow-hidden bg-brand-100">
+                    <div className="aspect-[21/9] overflow-hidden bg-brand-100">
                       <img
                         src={article.coverImage}
                         alt={article.title}

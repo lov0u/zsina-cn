@@ -265,3 +265,18 @@ a {
   border-top-color: #ea580c;
   box-shadow: 0 8px 24px rgba(31, 41, 55, 0.1);
 }
+
+/* 正文配图容器：21:9 比例，避免图片过高；图片按 object-cover 填充 */
+.article-image {
+  aspect-ratio: 21 / 9;
+  overflow: hidden;
+  margin: 1.75rem 0;
+  border-radius: 0.5rem;
+  background: #f3f4f6;
+}
+.article-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}

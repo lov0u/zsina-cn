@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 import { getArticlesByTag, getAllTagSlugs } from "@/lib/payload";
 import { companyInfo } from "@/lib/data";
 
-export const revalidate = 3600;
+export const revalidate = 60;
 
 export async function generateStaticParams() {
   const slugs = await getAllTagSlugs();
@@ -78,7 +78,7 @@ export default async function TagArticlesPage({
                   className="group bg-white border-l-4 border-accent-500 overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
                 >
                   {article.coverImage && (
-                    <div className="relative h-48 overflow-hidden">
+                    <div className="relative aspect-[21/9] overflow-hidden">
                       <Image src={article.coverImage} alt={article.title} fill className="object-cover group-hover:scale-110 transition-transform duration-500" />
                     </div>
                   )}

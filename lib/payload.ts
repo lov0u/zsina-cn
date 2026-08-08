@@ -6,6 +6,12 @@
 const PAYLOAD_URL = process.env.NEXT_PUBLIC_PAYLOAD_URL || 'http://payload.ra0.cn'
 const PAYLOAD_API_KEY = process.env.PAYLOAD_API_KEY || ''
 
+// 媒体库返回的 url 可能已是绝对地址（https://payload.ra0.cn/api/media/file/...），
+// 此时不能再拼 PAYLOAD_URL，否则会变成 http://…https://… 双 URL 导致缩略图裂图。
+function toAbsUrl(url: string): string {
+  return /^https?:\/\//.test(url) ? url : `${PAYLOAD_URL}${url}`
+}
+
 // 当前站点标识（每个站需要改成自己的）
 const SITE_SLUG = 'zsina'
 
@@ -44,7 +50,7 @@ function mapArticleListItem(doc: any): ArticleListItem {
     slug: doc.slug || `article-${doc.id}`,
     excerpt: doc.excerpt || '',
     coverImage: doc.coverImage?.url
-      ? `${PAYLOAD_URL}${doc.coverImage.url}`
+      ? toAbsUrl(doc.coverImage.url)
       : undefined,
     publishedAt: doc.publishedAt || doc.createdAt || new Date().toISOString(),
   }
@@ -58,7 +64,7 @@ function mapArticle(doc: any): Article {
     excerpt: doc.excerpt || '',
     content: doc.content || '',
     coverImage: doc.coverImage?.url
-      ? `${PAYLOAD_URL}${doc.coverImage.url}`
+      ? toAbsUrl(doc.coverImage.url)
       : undefined,
     publishedAt: doc.publishedAt || doc.createdAt || new Date().toISOString(),
     metaTitle: doc.metaTitle || doc.title,
@@ -79,7 +85,7 @@ export async function getArticles(
 
     const res = await fetch(url, {
       headers: getHeaders(),
-      next: { revalidate: 3600 }, // ISR: 每小时重新验证
+      next: { revalidate: 60 }, // ISR: 每分钟重新验证，保证新文章/配图快速可见
     })
 
     if (!res.ok) {
@@ -109,7 +115,7 @@ export async function getArticle(slug: string): Promise<Article | null> {
 
     const res = await fetch(url, {
       headers: getHeaders(),
-      next: { revalidate: 3600 },
+      next: { revalidate: 60 },
     })
 
     if (!res.ok) {
@@ -156,7 +162,7 @@ export async function getTags(): Promise<Tag[]> {
 
     const res = await fetch(url, {
       headers: getHeaders(),
-      next: { revalidate: 3600 },
+      next: { revalidate: 60 },
     })
 
     if (!res.ok) {
@@ -191,7 +197,7 @@ export async function getArticlesByTag(
     const tagUrl = `${PAYLOAD_URL}/api/tags?where[slug][equals]=${tagSlug}&where[site.slug][equals]=${SITE_SLUG}&limit=1`
     const tagRes = await fetch(tagUrl, {
       headers: getHeaders(),
-      next: { revalidate: 3600 },
+      next: { revalidate: 60 },
     })
 
     let tag: Tag | null = null
@@ -211,7 +217,7 @@ export async function getArticlesByTag(
 
     const res = await fetch(url, {
       headers: getHeaders(),
-      next: { revalidate: 3600 },
+      next: { revalidate: 60 },
     })
 
     if (!res.ok) {
