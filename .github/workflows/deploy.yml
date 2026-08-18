@@ -55,7 +55,7 @@ jobs:
           docker run -d \
             --name zsina-cn \
             --restart always \
-            -p 3005:3000 \
+            -p 127.0.0.1:3005:3000 \
             -e NODE_ENV=production \
             crpi-e6ejb7mi9ku0ep4b.cn-shanghai.personal.cr.aliyuncs.com/lov0u/zsina-cn:latest
           echo "Prune old images..."
